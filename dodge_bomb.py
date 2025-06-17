@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -22,6 +23,21 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
+
+def gameover(screen: pg.Surface) -> None:
+    img = pg.image.load("fig/8.png")
+    fonto = pg.font.Font(None, 80)
+    txt = fonto.render("Game Over", True, (255, 255, 255))
+    bg_black=pg.Surface((WIDTH,HEIGHT))
+    pg.draw.rect(bg_black, (0,0,0), (0,0,WIDTH,HEIGHT))
+    bg_black.set_alpha(128)
+    screen.blit(bg_black,[0,0])
+    screen.blit(img, [300,HEIGHT/2 ])
+    screen.blit(img, [700, HEIGHT/2])
+    screen.blit(txt, [375, HEIGHT/2])
+    pg.display.flip()
+    time.sleep(5)
+    pg.display.update()
 
 
 def main():
@@ -79,6 +95,7 @@ def main():
         tmr += 1
         clock.tick(50)
         if kk_rct.colliderect(bb_rct):
+            gameover(screen)
             return
 
 
