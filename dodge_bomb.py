@@ -7,6 +7,14 @@ import pygame as pg
 
 WIDTH, HEIGHT = 1100, 650
 DELTA={pg.K_UP:(0,-5),pg.K_DOWN:(0,+5),pg.K_LEFT:(-5,0),pg.K_RIGHT:(+5,0),}#移動量辞書
+VECTOR={(-5,0):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 0, 0.9),
+        (-5,+5):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 45, 0.9),
+        (0,+5):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 90, 0.9),
+        (+5,+5):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 45, 0.9),
+        (+5,0):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 0, 0.9),
+        (+5,-5):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 315, 0.9),
+        (0,-5):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 270, 0.9),
+        (-5,-5):pg.transform.rotozoom(pg.image.load("ex2/fig/3.png"), 315, 0.9),}
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -52,6 +60,16 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     return bb_accs,bb_imgs
 
 
+def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    kk_img = pg.image.load("fig/3.png")
+    for mv,vec in VECTOR.items():
+        if sum_mv==mv:
+            kk_img=vec
+            if sum_mv[0]>=0:
+                kk_img=pg.transform.flip(kk_img, True, False)
+    return kk_img
+        
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -95,6 +113,7 @@ def main():
         #     sum_mv[0] -= 5
         # if key_lst[pg.K_RIGHT]:
         #     sum_mv[0] += 5
+        kk_img = get_kk_img(tuple(sum_mv))
         kk_rct.move_ip(sum_mv)
         screen.blit(kk_img, kk_rct)
         bb_bound=check_bound(bb_rct)
