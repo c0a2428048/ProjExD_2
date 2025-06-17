@@ -40,6 +40,19 @@ def gameover(screen: pg.Surface) -> None:
     pg.display.update()
 
 
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    bb_accs=[a for a in range(1,11)]
+    bb_accs=tuple(bb_accs)
+    bb_imgs=[]
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0,0,0))
+        bb_imgs.append(bb_img)
+    return bb_accs,bb_imgs
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -89,7 +102,10 @@ def main():
             vx=-vx
         if not bb_bound[1]:
             vy=-vy
-        bb_rct.move_ip(vx,vy)
+        bb_accs, bb_imgs = init_bb_imgs()
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        bb_img = bb_imgs[min(tmr//500, 9)]
+        bb_rct.move_ip(avx,vy)
         screen.blit(bb_img,bb_rct)
         pg.display.update()
         tmr += 1
