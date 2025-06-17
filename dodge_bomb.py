@@ -9,6 +9,21 @@ DELTA={pg.K_UP:(0,-5),pg.K_DOWN:(0,+5),pg.K_LEFT:(-5,0),pg.K_RIGHT:(+5,0),}#移�
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
+def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
+    """
+    引数：こうかとんRectかばくだんRect
+    戻り値：タプル（横方向判定結果，縦方向判定結果）
+    画面内ならTrue，画面外ならFalse
+    """
+    yoko, tate = True, True
+    if obj_rct.left < 0 or WIDTH < obj_rct.right: # 横方向判定
+        yoko = False
+    if obj_rct.top < 0 or HEIGHT < obj_rct.bottom: # 縦方向判定
+        tate = False
+    return yoko, tate
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -40,7 +55,9 @@ def main():
             if key_lst[key]:
                 sum_mv[1]+=mv[1]
                 sum_mv[0]+=mv[0]
-
+        kk_bound=check_bound(kk_rct)
+        if not kk_bound[0] or not kk_bound[1]:
+            sum_mv=[0,0]
         # if key_lst[pg.K_UP]:
         #     sum_mv[1] -= 5
         # if key_lst[pg.K_DOWN]:
@@ -51,6 +68,11 @@ def main():
         #     sum_mv[0] += 5
         kk_rct.move_ip(sum_mv)
         screen.blit(kk_img, kk_rct)
+        bb_bound=check_bound(bb_rct)
+        if not bb_bound[0]:
+            vx=-vx
+        if not bb_bound[1]:
+            vy=-vy
         bb_rct.move_ip(vx,vy)
         screen.blit(bb_img,bb_rct)
         pg.display.update()
